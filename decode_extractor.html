@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Base64 Link Decoder</title>
+</head>
+<body>
+<textarea id="input" rows="8" cols="80" placeholder="Paste your text here..."></textarea>
+<br>
+<button id="decode">Decode</button>
+<br>
+<textarea id="output" rows="8" cols="80" placeholder="Decoded text will appear here..."></textarea>
+
+<script>
+document.getElementById('decode').addEventListener('click', () => {
+  const inputText = document.getElementById('input').value;
+
+  // Regex to match L followed by base64-like characters
+  const pattern = /L([A-Za-z0-9+/=]+)(?=\b|[\s)'"`<>])/g;
+
+  const outputText = inputText.replace(pattern, (match, b64) => {
+    try {
+      // decodeURIComponent handles cases where URL-safe base64 is used
+      let decoded = atob(b64);
+      return decoded;
+    } catch (e) {
+      // If decoding fails, just return original
+      return match;
+    }
+  });
+
+  document.getElementById('output').value = outputText;
+});
+</script>
+</body>
+</html>
