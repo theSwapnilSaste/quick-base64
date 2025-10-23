@@ -30,7 +30,25 @@
         resize: vertical;
     }
     label { font-weight: bold; display: block; margin-bottom: 5px; }
-    .output { background: #f0f0f0; padding: 10px; border-radius: 5px; word-break: break-all; }
+    .output-container {
+        position: relative;
+        margin-bottom: 20px;
+    }
+    .output {
+        background: #f0f0f0;
+        padding: 10px;
+        border-radius: 5px;
+        word-break: break-all;
+        min-height: 40px;
+    }
+    button.copy-btn {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        padding: 5px 10px;
+        font-size: 14px;
+        cursor: pointer;
+    }
 </style>
 </head>
 <body>
@@ -41,10 +59,16 @@
     <textarea id="inputText" placeholder="Type or paste text here..."></textarea>
     
     <label>Base64 Encoded:</label>
-    <div id="encodedOutput" class="output"></div>
+    <div class="output-container">
+        <div id="encodedOutput" class="output"></div>
+        <button class="copy-btn" onclick="copyToClipboard('encodedOutput')">Copy</button>
+    </div>
     
     <label>Decoded (from Base64):</label>
-    <div id="decodedOutput" class="output"></div>
+    <div class="output-container">
+        <div id="decodedOutput" class="output"></div>
+        <button class="copy-btn" onclick="copyToClipboard('decodedOutput')">Copy</button>
+    </div>
 </div>
 
 <script>
@@ -54,6 +78,7 @@ const decodedOutput = document.getElementById('decodedOutput');
 
 function updateOutputs() {
     const text = inputText.value;
+
     // Encode to Base64
     try {
         const encoded = btoa(text);
@@ -69,6 +94,16 @@ function updateOutputs() {
     } catch(e) {
         decodedOutput.textContent = 'Error decoding text';
     }
+}
+
+// Copy output to clipboard
+function copyToClipboard(elementId) {
+    const text = document.getElementById(elementId).textContent;
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Copied to clipboard!');
+    }).catch(err => {
+        alert('Failed to copy: ' + err);
+    });
 }
 
 // Update outputs as user types
